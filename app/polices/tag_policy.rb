@@ -1,9 +1,22 @@
 # frozen_string_literal: true
 
 class TagPolicy < AbstractPolicy
-
+  # Создавать тэги может только FirmOwner, FirmManager, Emplyee c правами access_rights.can_create_tags
   def can_create?
-    #TODO: make me
+    return accept if editor_logged_in_as_owner?
+    return accept if editor_logged_in_as_firm_admin?
+    return accept if editor_logged_in_as_employee? && access_rights.manage_tags
+
+    default_deny
+  end
+
+  # Считаем, что читать может FirmOwner, FirmManager, FirmMember или Сlient, если они в этой фирме (same_firm? == true)
+  def can_read?
+    return accept if firm_member? && same_firm?
+    return accept if editor_logged_in_as_owner? && same_firm?
+    return accept if editor_logged_in_as_firm_admin? && same_firm?
+    return accept if editor_logged_in_as_employee? && same_firm?
+    return accept if client? && same_firm?
 
     default_deny
   end
@@ -38,4 +51,3 @@ class TagPolicy < AbstractPolicy
     end
   end
 end
-

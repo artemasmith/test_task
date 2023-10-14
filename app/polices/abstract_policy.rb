@@ -110,27 +110,33 @@ class AbstractPolicy
   end
 
   def default_deny
-    deny reason: I18n.t('policies.abstract_policy.action_forbidden'), exception_class_name: 'AbstractPolicy::ForbiddenAccessError'
+    deny reason: I18n.t('policies.abstract_policy.action_forbidden'),
+         exception_class_name: 'AbstractPolicy::ForbiddenAccessError'
   end
 
   def deny_on_read_only_mode
-    deny reason: I18n.t('policies.abstract_policy.read_only'), exception_class_name: 'AbstractPolicy::ReadOnlyAccessError'
+    deny reason: I18n.t('policies.abstract_policy.read_only'),
+         exception_class_name: 'AbstractPolicy::ReadOnlyAccessError'
   end
 
   def deny_on_import
-    deny reason: I18n.t('policies.abstract_policy.cant_import_clients'), exception_class_name: 'AbstractPolicy::NoPermissionForImportError'
+    deny reason: I18n.t('policies.abstract_policy.cant_import_clients'),
+         exception_class_name: 'AbstractPolicy::NoPermissionForImportError'
   end
 
   def deny_on_sealed_document
-    deny reason: I18n.t('policies.abstract_policy.you_cant_edit_document'), exception_class_name: 'AbstractPolicy::SealedDocumentAccessError'
+    deny reason: I18n.t('policies.abstract_policy.you_cant_edit_document'),
+         exception_class_name: 'AbstractPolicy::SealedDocumentAccessError'
   end
 
   def deny_on_sealed_directory
-    deny reason: I18n.t('policies.abstract_policy.you_cant_edit_directory'), exception_class_name: 'AbstractPolicy::SealedDirectoryAccessError'
+    deny reason: I18n.t('policies.abstract_policy.you_cant_edit_directory'),
+         exception_class_name: 'AbstractPolicy::SealedDirectoryAccessError'
   end
 
   def deny_on_sealed_organizer
-    deny reason: I18n.t('policies.abstract_policy.you_cant_edit_organizer'), exception_class_name: 'AbstractPolicy::SealedOrganizerAccessError'
+    deny reason: I18n.t('policies.abstract_policy.you_cant_edit_organizer'),
+         exception_class_name: 'AbstractPolicy::SealedOrganizerAccessError'
   end
 
   def deny_on_quickbooks_connection
@@ -138,11 +144,13 @@ class AbstractPolicy
   end
 
   def deny_on_incompleted_organizer
-    deny reason: I18n.t('policies.abstract_policy.you_cant_complette_organizer'), exception_class_name: 'AbstractPolicy::IncompletedOrganizerAccessError'
+    deny reason: I18n.t('policies.abstract_policy.you_cant_complette_organizer'),
+         exception_class_name: 'AbstractPolicy::IncompletedOrganizerAccessError'
   end
 
   def deny_on_archived_account
-    deny reason: I18n.t('policies.abstract_policy.account_archived'), exception_class_name: 'AbstractPolicy::ArchivedAccountAccessError'
+    deny reason: I18n.t('policies.abstract_policy.account_archived'),
+         exception_class_name: 'AbstractPolicy::ArchivedAccountAccessError'
   end
 
   def accept
@@ -187,16 +195,18 @@ class AbstractPolicy
   end
 
   def firm_member?
-    owner? || (employee? || editor_logged_in_as_employee?)
+    firm_manager? || (employee? || editor_logged_in_as_employee?)
   end
 
   def owner?
     return false if logged_in_from_editor?
+
     actor.owner?
   end
 
   def firm_admin?
     return false if logged_in_from_editor?
+
     actor.firm_admin?
   end
 
@@ -206,16 +216,19 @@ class AbstractPolicy
 
   def employee?
     return false if logged_in_from_editor?
+
     actor.employee?
   end
 
   def regular_employee?
     return false if logged_in_from_editor?
+
     actor.employee? && !firm_admin?
   end
 
   def client?
     return false if logged_in_from_editor?
+
     actor.client?
   end
 
@@ -286,7 +299,7 @@ class AbstractPolicy
   def update_params_allowed?(update_params, allowed_keys)
     return true if update_params.blank?
     return true if (update_params.keys.map(&:to_sym) - allowed_keys).blank?
+
     false
   end
 end
-

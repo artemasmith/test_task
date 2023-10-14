@@ -41,6 +41,7 @@ module KindOfService
 
     def calls(user, actor)
       return unless block_given?
+
       result = []
 
       instance = Calls.new(user, actor, self)
@@ -80,15 +81,15 @@ module KindOfService
       log(WARN) { "Warning! Deprecated method #error in service #{self.class.name}, use #failure instead" }
     end
 
-    {data: data, errors: extract_nested_error_messages(errors), error_code: error_code}
+    { data:, errors: extract_nested_error_messages(errors), error_code: }
   end
 
   def failure(errors, data = nil)
-    {data: data, errors: errors}
+    { data:, errors: }
   end
 
   def success(data = nil)
-    {data: data, errors: []}
+    { data:, errors: [] }
   end
 
   def validation_error(errors)
@@ -104,10 +105,10 @@ module KindOfService
   end
 
   def general_error(message, reason)
-    {general: {
-      message: message,
-      reason: reason
-    }}
+    { general: {
+      message:,
+      reason:
+    } }
   end
 
   def after_commit(connection: ActiveRecord::Base.connection, &block)
@@ -115,7 +116,7 @@ module KindOfService
   end
 
   def transaction(requires_new: true, &block)
-    ActiveRecord::Base.transaction(requires_new: requires_new, &block)
+    ActiveRecord::Base.transaction(requires_new:, &block)
   end
 
   private

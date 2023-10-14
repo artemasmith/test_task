@@ -19,7 +19,10 @@ class TagCreate
       tag.save!
 
       after_commit do
-        CustomerIo::InAppMessagesRelatedUserSendWorker.perform_async(@actor.user.id, 'tag_create') if FeaturesHelper.feature_available?(:customer_io)
+        if FeaturesHelper.feature_available?(:customer_io)
+          CustomerIo::InAppMessagesRelatedUserSendWorker.perform_async(@actor.user.id,
+                                                                       'tag_create')
+        end
         HelpScoutUserSendWorker.perform_async(@actor.user.id) if FeaturesHelper.feature_available?(:help_scout)
       end
     end
@@ -29,4 +32,3 @@ class TagCreate
     failure(validation_error(e.record.errors))
   end
 end
-
