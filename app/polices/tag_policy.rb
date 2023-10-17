@@ -2,8 +2,19 @@
 
 class TagPolicy < AbstractPolicy
 
+  def can_show?
+    return accept if owner?
+    return accept if firm_manager?
+    return accept if firm_member?
+    return accept if client? && same_firm?
+
+    default_deny
+  end
+
   def can_create?
-    #TODO: make me
+    return accept if owner?
+    return accept if firm_manager?
+    return accept if employee? && access_rights.can_create_tags
 
     default_deny
   end
